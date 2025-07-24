@@ -1,12 +1,18 @@
-import type { Flashcard } from "./app/renderer/src/features/flashcards/types/flashcard"
+import type { RawPaginatedResponse } from "@/features/flashcards/schemas/deckSchema";
+import type { FlashCard } from "@/features/flashcards/types/flashcard.types";
 
-export {}
+export {};
 
 declare global {
   interface Window {
     api: {
-      getFlashcardById: () => Promise<Flashcard>
-      insertDeck: (title: string, parentId: string) => Promise<unknown>
-    }
+      getDeckById: () => Promise<FlashCard>;
+      getDecksPaginated: (params: {
+        page?: string;
+        limit?: string;
+        name?: string;
+      }) => Promise<RawPaginatedResponse[]>;
+      insertDeck: (title: string, parentId: string) => Promise<unknown>;
+    };
   }
 }

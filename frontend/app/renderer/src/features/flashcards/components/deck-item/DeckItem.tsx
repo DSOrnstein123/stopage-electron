@@ -1,4 +1,4 @@
-import { Deck } from "@/features/flashcards/types/flashcard.types";
+import { type Deck } from "@/features/flashcards/types/flashcard.types";
 import {
   Card,
   CardDescription,
@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardTitle,
   CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/components/shadcn/card";
+import { Button } from "@/components/shadcn/button";
 import { Link } from "react-router-dom";
 
 const DeckItem = ({ data }: { data: Deck }) => {

@@ -11,7 +11,7 @@ interface DeckFiltersState {
 }
 
 const useDeckFiltersStore = create<DeckFiltersState>((set) => ({
-  searchQuery: "",
+  searchQuery: "%",
   page: 1,
   limit: 5, 
 
