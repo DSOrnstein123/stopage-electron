@@ -1,6 +1,7 @@
 import LeftSidebar from "@/components/mycomponents/custom/sidebar/Leftsidebar";
-import TabContainer from "@/components/mycomponents/custom/tab-container";
+import TabBar from "@/components/mycomponents/custom/tab-container/TabBar";
 import { cn } from "@/lib/utils";
+import { Outlet } from "react-router-dom";
 // import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
@@ -24,12 +25,16 @@ const MainLayout = () => {
       <main
         id="canvas"
         className={cn(
-          "relative flex h-screen flex-1 flex-col items-center justify-center overflow-hidden",
+          "relative flex h-screen flex-1 flex-col items-center justify-center overflow-hidden"
           // tool === "select" ? "cursor-default" : "cursor-grab",
         )}
       >
-        <TabContainer />
+        <TabBar />
+
+        <Outlet />
       </main>
+
+      {/* <RightSidebar /> */}
     </div>
   );
 };
