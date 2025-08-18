@@ -9,11 +9,12 @@ const PrimarySidebar = () => {
   return (
     <aside
       ref={primarySidebarRef}
-      className="group/sidebar bg-primary/5 relative z-[20] h-full w-60 flex-col space-y-[2px] p-2"
+      className="group/sidebar bg-primary/5 relative z-[20] h-full w-56 flex-col space-y-[2px] p-2"
     >
+      <Resizer sidebarRef={primarySidebarRef} isPrimarySidebar={true} />
+
       <Folder />
       <File name="File 3" />
-      <Resizer primarySidebarRef={primarySidebarRef} />
     </aside>
   );
 };
