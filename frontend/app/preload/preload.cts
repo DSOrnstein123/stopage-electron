@@ -8,4 +8,12 @@ electron.contextBridge.exposeInMainWorld("api", {
     name?: string;
   }) => electron.ipcRenderer.invoke("get-decks-paginated", params),
   insertDeck: () => electron.ipcRenderer.invoke("insert-deck"),
+
+  importImage: () => electron.ipcRenderer.invoke("import-image"),
+
+  insertDocument: (title: string | null) =>
+    electron.ipcRenderer.invoke("create-document", title),
+
+  updateDocument: (id: string, title: string | null, content: string | null) =>
+    electron.ipcRenderer.invoke("update-document", id, title, content),
 });

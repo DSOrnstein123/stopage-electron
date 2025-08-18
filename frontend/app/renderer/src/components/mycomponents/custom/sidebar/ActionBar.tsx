@@ -1,9 +1,28 @@
 import { Button } from "@/components/shadcn/button";
-import { Link } from "react-router-dom";
+import useDocumentsMutation from "@/features/documents/hooks/useDocumentsMutation";
+import { useTabStore } from "@/store/tabStore";
+import { Calendar } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const ActionBar = () => {
+  const { addTab } = useTabStore((state) => state.actions);
+  const { mutateAsync: createDocument } = useDocumentsMutation();
+  const navigate = useNavigate();
+
   return (
-    <aside className="bg-primary/20 flex h-full w-10 flex-col items-center py-1">
+    <aside className="bg-primary/20 flex h-full w-10 flex-col items-center gap-y-[1px] py-1">
+      <Button
+        variant="ghost"
+        className="relative size-8 p-0"
+        onClick={async () => {
+          const data = await createDocument();
+          addTab(`/documents/${data.id}`, "New document");
+          navigate(`/documents/${data.id}`);
+        }}
+      >
+        <img src="/icon/new_note.svg" className="h-5 w-5" />
+      </Button>
+
       <Link to="/flashcards">
         <Button variant="ghost" className="relative size-8">
           <svg
@@ -38,6 +57,12 @@ const ActionBar = () => {
               fill="white"
             />
           </svg>
+        </Button>
+      </Link>
+
+      <Link to="/planner">
+        <Button variant="ghost" className="relative size-8">
+          <Calendar />
         </Button>
       </Link>
     </aside>

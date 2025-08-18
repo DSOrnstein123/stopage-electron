@@ -12,6 +12,8 @@ interface PageState {
   updateBlocks: (id: string, newBlock: string) => void
   moveBlock: (fromIndex: number, toIndex: number) => void
   addOrder: (index: number, id: string) => void
+  headerHeight: number,
+  setHeaderHeight: (height: number) => void,
 }
 
 export const usePageStore = create<PageState>((set) => ({
@@ -45,5 +47,8 @@ export const usePageStore = create<PageState>((set) => ({
       [id]: newContent,
     }
     return {blocks: newBlocks}
-  })
+  }),
+
+  headerHeight: 0,
+  setHeaderHeight: (height) => set({ headerHeight: height })
 }))

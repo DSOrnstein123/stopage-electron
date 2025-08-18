@@ -1,4 +1,5 @@
 import axios from "axios";
+import { IpcMainInvokeEvent } from "electron";
 
 const handleGetDeckById = async () => {
   const res = await axios.get("http://localhost:5000/api/decks", {
@@ -8,12 +9,12 @@ const handleGetDeckById = async () => {
 };
 
 const handleInsertDeck = async (
-  _event: Electron.IpcMainInvokeEvent,
+  _: IpcMainInvokeEvent,
   { name, parentId }: { name: string; parentId: string }
 ) => {
   try {
     const res = await axios.post("http://localhost:5000/api/decks", {
-      name,
+      name: name,
       parentId: parentId,
     });
     return res.data;
@@ -23,7 +24,7 @@ const handleInsertDeck = async (
 };
 
 const handleGetDecksPaginated = async (
-  _event: Electron.IpcMainInvokeEvent,
+  _: IpcMainInvokeEvent,
   {
     name = "",
     page = "1",

@@ -153,6 +153,20 @@ func (q *Queries) InsertDeckFlashcardRelation(ctx context.Context, arg InsertDec
 	return q.db.ExecContext(ctx, insertDeckFlashcardRelation, arg.DeckID, arg.FlashcardID)
 }
 
+const insertDocument = `-- name: InsertDocument :exec
+INSERT INTO documents (id, title) VALUES (?, ?)
+`
+
+type InsertDocumentParams struct {
+	ID    string         `json:"id"`
+	Title sql.NullString `json:"title"`
+}
+
+func (q *Queries) InsertDocument(ctx context.Context, arg InsertDocumentParams) error {
+	_, err := q.db.ExecContext(ctx, insertDocument, arg.ID, arg.Title)
+	return err
+}
+
 const insertFlashcard = `-- name: InsertFlashcard :execresult
 INSERT INTO flashcards (id, front, back) VALUES (?, ?, ?)
 `
@@ -178,4 +192,21 @@ type SetParentIdParams struct {
 
 func (q *Queries) SetParentId(ctx context.Context, arg SetParentIdParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, setParentId, arg.ParentID, arg.ID)
+}
+
+const updateDocument = `-- name: UpdateDocument :exec
+UPDATE documents
+SET title = ?, content = ?
+WHERE id = ?
+`
+
+type UpdateDocumentParams struct {
+	Title   sql.NullString `json:"title"`
+	Content sql.NullString `json:"content"`
+	ID      string         `json:"id"`
+}
+
+func (q *Queries) UpdateDocument(ctx context.Context, arg UpdateDocumentParams) error {
+	_, err := q.db.ExecContext(ctx, updateDocument, arg.Title, arg.Content, arg.ID)
+	return err
 }

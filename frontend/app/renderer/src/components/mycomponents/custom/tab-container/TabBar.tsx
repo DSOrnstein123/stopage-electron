@@ -10,7 +10,7 @@ const TabBar = () => {
   const tabs = useTabStore((state) => state.tabs);
   const activeTabId = useTabStore((state) => state.activeTabId);
 
-  const addTab = useTabStore((state) => state.addTab);
+  const { addTab } = useTabStore((state) => state.actions);
 
   return (
     //TODO: relearn fixed and sticky
@@ -24,7 +24,7 @@ const TabBar = () => {
           />
         ))}
 
-        <Button variant="ghost" onClick={() => addTab()}>
+        <Button variant="ghost" onClick={() => addTab("/")}>
           <Plus />
         </Button>
       </div>

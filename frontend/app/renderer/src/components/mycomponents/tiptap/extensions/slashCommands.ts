@@ -1,6 +1,6 @@
-import { Extension, ReactRenderer } from "@tiptap/react"
-import  Suggestion, { SuggestionOptions } from '@tiptap/suggestion'
-import tippy, { Instance } from "tippy.js";
+import { Extension, ReactRenderer } from "@tiptap/react";
+import Suggestion, { type SuggestionOptions } from "@tiptap/suggestion";
+import tippy, { type Instance } from "tippy.js";
 import SlashCommandsList from "./SlashCommandsList";
 
 interface SlashSuggestionOptions {
@@ -15,20 +15,20 @@ const SlashCommandExtension = Extension.create<SlashSuggestionOptions>({
   addOptions: () => {
     return {
       suggestion: {
-        char: '/',
+        char: "/",
         command: ({ editor, range, props }) => {
-          props.command({ editor, range })
+          props.command({ editor, range });
         },
         render: () => {
-          let reactRenderer: ReactRenderer
-          let popup: Instance[]
+          let reactRenderer: ReactRenderer;
+          let popup: Instance[];
 
           return {
             onStart: (props) => {
               reactRenderer = new ReactRenderer(SlashCommandsList, {
                 props,
-                editor: props.editor
-              })
+                editor: props.editor,
+              });
 
               if (!props.clientRect) return;
 
@@ -36,9 +36,9 @@ const SlashCommandExtension = Extension.create<SlashSuggestionOptions>({
                 getReferenceClientRect: () => {
                   const rect = props.clientRect?.();
                   if (rect) {
-                    return rect
+                    return rect;
                   }
-                  return new DOMRect(0, 0, 0, 0); 
+                  return new DOMRect(0, 0, 0, 0);
                 },
                 appendTo: () => document.body,
                 content: reactRenderer.element,
@@ -56,9 +56,9 @@ const SlashCommandExtension = Extension.create<SlashSuggestionOptions>({
                 getReferenceClientRect: () => {
                   const rect = props.clientRect?.();
                   if (rect) {
-                    return rect
+                    return rect;
                   }
-                  return new DOMRect(0, 0, 0, 0); 
+                  return new DOMRect(0, 0, 0, 0);
                 },
               });
             },
@@ -66,22 +66,22 @@ const SlashCommandExtension = Extension.create<SlashSuggestionOptions>({
             onKeyDown(props) {
               if (props.event.key === "Escape") {
                 popup[0].hide();
-                
+
                 return true;
               }
 
               // return reactRenderer.ref?.onKeyDown(props);
-              return false
+              return false;
             },
 
             onExit() {
               popup[0].destroy();
               reactRenderer.destroy();
             },
-          }
-        }
+          };
+        },
       },
-    }
+    };
   },
 
   addProseMirrorPlugins() {
@@ -90,9 +90,8 @@ const SlashCommandExtension = Extension.create<SlashSuggestionOptions>({
         editor: this.editor,
         ...this.options.suggestion,
       }),
-    ]
+    ];
   },
-})
+});
 
-
-export default SlashCommandExtension
+export default SlashCommandExtension;

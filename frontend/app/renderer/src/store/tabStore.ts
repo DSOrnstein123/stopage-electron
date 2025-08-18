@@ -1,50 +1,58 @@
 import { type Tab } from "@/types/tab.types";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface TabState {
   tabs: Tab[];
   activeTabId: string | null;
-  setActiveTab: (id: string) => void;
-  addTab: () => void;
+
+  actions: TabAction;
 }
 
-export const useTabStore = create<TabState>((set) => ({
-  tabs: [
-    {
-      id: "1",
-      title: "Tab 1",
-      route: "/flashcards",
-    },
-    {
-      id: "2",
-      title: "Tab 2",
-      route: "/flashcards/c409a68b-2818-427f-b68a-e9df687f761c",
-    },
-    {
-      id: "3",
-      title: "Tab 3",
-      route: "/flashcards/43afb2e9-ce19-4c36-bba4-5da37b3444bc/study",
-    },
-    {
-      id: "4",
-      title: "Tab 4",
-      route: "/gallery",
-    },
-  ],
-  activeTabId: null,
+interface TabAction {
+  setActiveTab: (id: string) => void;
+  addTab: (route: string, title?: string) => void;
+  removeTab: (id: string) => void;
+}
 
-  setActiveTab: (id) => set({ activeTabId: id }),
-  addTab: () => {
-    const id = Date.now().toString();
-    const newTab: Tab = {
-      id: id,
-      title: "New tab",
-      route: "/flashcards",
-    };
+export const useTabStore = create<TabState, [["zustand/persist", TabState]]>(
+  persist(
+    (set) => ({
+      tabs: [],
+      activeTabId: null,
 
-    set((state) => ({
-      tabs: [...state.tabs, newTab],
-      activeTabId: id,
-    }));
-  },
-}));
+      actions: {
+        setActiveTab: (id) => set({ activeTabId: id }),
+        addTab: (route, title = "New tab") => {
+          const id = Date.now().toString();
+          const newTab: Tab = {
+            id: id,
+            title: title,
+            route: route,
+          };
+
+          set((state) => ({
+            tabs: [...state.tabs, newTab],
+            activeTabId: id,
+          }));
+        },
+        removeTab: (id) => {
+          set((state) => {
+            const remainingTabs = state.tabs.filter((tab) => tab.id !== id);
+
+            const newActiveTab =
+              state.activeTabId === id
+                ? remainingTabs.at(-1)?.id || null
+                : state.activeTabId;
+
+            return {
+              tabs: remainingTabs,
+              activeTabId: newActiveTab,
+            };
+          });
+        },
+      },
+    }),
+    { name: "tab-storage" },
+  ),
+);

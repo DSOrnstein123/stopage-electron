@@ -13,24 +13,16 @@ import {
 import useDeckFiltersStore from "../../stores/deckFiltersStore";
 
 const DecksList = () => {
-  const { data, isLoading, isError } = useDecksFetch();
+  const { data } = useDecksFetch();
   const page = useDeckFiltersStore((state) => state.page);
   const setPage = useDeckFiltersStore((state) => state.setPage);
 
-  const { totalPages, decksFlat = [] } = data ?? {};
-
-  if (isLoading) {
-    return <div>Đang tải danh sách deck...</div>;
-  }
-
-  if (isError) {
-    return <div>Có lỗi xảy ra khi tải dữ liệu.</div>;
-  }
+  const { totalPages, decks = [] } = data ?? {};
 
   return (
     <>
       <div className="flex flex-col gap-y-2">
-        {decksFlat.map((deck) => (
+        {decks.map((deck) => (
           <DeckItem data={deck} key={deck.id} />
         ))}
       </div>
