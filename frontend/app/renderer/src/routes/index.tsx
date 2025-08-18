@@ -1,18 +1,21 @@
-import { createHashRouter } from "react-router-dom";
+import { createHashRouter, Outlet } from "react-router-dom";
 
 // import Canvas from "@/components/custom/canvas/Canvas";
-import Flashcards from "@/components/mycomponents/custom/page/Flashcards";
 // import StudyPage from "@/features/flashcards/components/study-page/StudyPage";
 // import {
 //   DeckDetails,
 //   deckLoader,
 // } from "@/features/flashcards/components/deck-details/DeckDetails";
-import FlashCardsLayout from "./layout/FlashCardsLayout";
 import MainLayout from "./layout/MainLayout";
 import { type BreadcrumbHandle } from "./types";
+// import Gallery from "@/features/gallery/components/Gallery";
+// import Calendar from "@/features/planner/components/calendar/Calendar";
+import FlashCardsPage from "./layout/FlashCardsPage";
+import FlashCardsLayout from "@/features/flashcards/FlashCardsLayout";
+import PageWrapper from "@/components/mycomponents/custom/page/PageWrapper";
+import Calendar from "@/features/planner/components/calendar/Calendar";
 // import { QueryClient } from "@tanstack/react-query";
 // import Gallery from "@/features/gallery/Gallery";
-// import TextEditor from "@/components/mycomponents/tiptap/TextEditor";
 // import SpinePlayer from "@/features/spine/SpinePlayer";
 
 // const queryClient = new QueryClient();
@@ -24,14 +27,14 @@ const router = createHashRouter([
     children: [
       {
         path: "flashcards",
-        element: <Flashcards />,
+        element: <FlashCardsLayout />,
         handle: {
           breadcrumb: "Flashcards",
         } satisfies BreadcrumbHandle,
         children: [
           {
             index: true,
-            element: <FlashCardsLayout />,
+            element: <FlashCardsPage />,
           },
           // {
           //   path: ":id",
@@ -62,10 +65,20 @@ const router = createHashRouter([
           // },
         ],
       },
-      // {
-      //   path: "gallery",
-      //   element: <SpinePlayer />,
-      // },
+      {
+        path: "planner",
+        element: <Calendar />,
+      },
+      {
+        path: "documents",
+        element: <Outlet />,
+        children: [
+          {
+            path: ":id",
+            element: <PageWrapper />,
+          },
+        ],
+      },
     ],
   },
 ]);
