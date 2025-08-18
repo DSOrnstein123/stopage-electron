@@ -1,8 +1,12 @@
 version: "2"
 sql:
   - engine: "sqlite"
+    queries:
     queries: "query.sql"
     schema: "schema.sql"
+    schema:
+      - "queries/flashcards/schema.sql"
+      - "queries/documents/schema.sql"
     gen:
       go:
         package: "gen"

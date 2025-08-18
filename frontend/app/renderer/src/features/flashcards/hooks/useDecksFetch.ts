@@ -2,8 +2,8 @@
 import { useQuery } from "@tanstack/react-query";
 import useDeckFiltersStore from "../stores/deckFiltersStore";
 import { type Deck } from "../types/flashcard.types";
-import { mapDeck } from "@/mapping/map";
-import type { RawPaginatedResponse } from "../schemas/deckSchema";
+import { ProcessedPaginatedResponseSchema } from "../schemas/deckSchema";
+import z from "zod";
 
 export interface DecksData {
   decksFlat: Deck[];
@@ -22,21 +22,24 @@ const useDecksFetch = () => {
   return useQuery({
     queryKey: ["decks", searchQuery, limit, page],
     queryFn: async () => {
-      const data = await window.api.getDecksPaginated({
-        name: searchQuery,
-        page: String(page),
-        limit: String(limit),
-      });
-      const decks = data.map(mapDeck);
+      try {
+        //TODO: fix return value (don't need to return parameters)
+        const rawData = await window.api.getDecksPaginated({
+          name: searchQuery,
+          page: String(page),
+          limit: String(limit),
+        });
 
-      return {
-        decksFlat: decks,
-        decks: decks,
-        totalCount: 10,
-        totalPages: 10,
-        currentPage: 1,
-        limit: 10,
-      };
+        const processedData = ProcessedPaginatedResponseSchema.parse(rawData);
+
+        return processedData;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          console.error("error", error.message);
+          throw new Error("Invalid API response format");
+        }
+        throw error;
+      }
     },
     staleTime: 5 * 60 * 1000,
   });

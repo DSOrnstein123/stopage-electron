@@ -18,8 +18,8 @@ const ProcessedDeckSchema = RawDeckSchema.transform((rawDeck) => ({
 type ProcessedDeck = z.infer<typeof ProcessedDeckSchema>;
 
 const RawPaginatedResponseSchema = z.object({
-  data: z.array(RawDeckSchema),
-  totalCount: z.number().int().nonnegative(),
+  decks: z.array(RawDeckSchema),
+  totalCounts: z.number().int().nonnegative(),
   totalPages: z.number().int().positive(),
   currentPage: z.number().int().positive(),
   limit: z.number().int().positive(),
@@ -28,8 +28,8 @@ const RawPaginatedResponseSchema = z.object({
 type RawPaginatedResponse = z.infer<typeof RawPaginatedResponseSchema>;
 
 const ProcessedPaginatedResponseSchema = z.object({
-  data: z.array(ProcessedDeckSchema),
-  totalCount: z.number(),
+  decks: z.array(ProcessedDeckSchema),
+  totalCounts: z.number(),
   totalPages: z.number(),
   currentPage: z.number(),
   limit: z.number(),
