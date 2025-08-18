@@ -2,8 +2,8 @@ version: "2"
 sql:
   - engine: "sqlite"
     queries:
-    queries: "query.sql"
-    schema: "schema.sql"
+      - "queries/flashcards/query.sql"
+      - "queries/documents/query.sql"
     schema:
       - "queries/flashcards/schema.sql"
       - "queries/documents/schema.sql"

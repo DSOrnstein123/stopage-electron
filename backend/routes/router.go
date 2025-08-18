@@ -21,3 +21,15 @@ func DecksRoute(router *gin.RouterGroup, queries *gen.Queries) {
 		api.GetDeck(ctx, queries)
 	})
 }
+
+func DocumentsRoute(router *gin.RouterGroup, queries *gen.Queries) {
+	documentsRoute := router.Group("/documents")
+
+	documentsRoute.POST("/", func(ctx *gin.Context) {
+		api.PostDocument(ctx, queries)
+	})
+
+	documentsRoute.POST("/:id", func(ctx *gin.Context) {
+		api.UpdateDocument(ctx, queries)
+	})
+}

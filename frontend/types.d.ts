@@ -13,6 +13,18 @@ declare global {
         name?: string;
       }) => Promise<RawPaginatedResponse[]>;
       insertDeck: (title: string, parentId: string) => Promise<unknown>;
+
+      importImage: () => void;
+
+      insertDocument: (
+        title = null,
+      ) => Promise<{ id: string; title: string | null }>;
+
+      updateDocument: (
+        id,
+        title: string | null = null,
+        content: string | null = null,
+      ) => void;
     };
   }
 }
