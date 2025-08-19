@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite'
-import path from "path"
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-
+import { defineConfig } from "vite";
+import path from "path";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,10 +13,11 @@ export default defineConfig({
   },
   base: "./",
   build: {
-    outDir: "dist-frontend"
+    outDir: "dist-frontend",
   },
   server: {
     port: 5123,
     strictPort: true,
   },
-})
+  publicDir: "./app/renderer/public",
+});
