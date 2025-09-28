@@ -1,4 +1,4 @@
-import DocumentContent from "../../tiptap/DocumentContent";
+import DocumentContent from "../tiptap/DocumentContent";
 import DocumentTitle from "./DocumentTitle";
 
 const Page = () => {

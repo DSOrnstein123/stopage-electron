@@ -11,10 +11,16 @@ const PrimarySidebar = () => {
       ref={primarySidebarRef}
       className="group/sidebar bg-primary/5 relative z-[20] h-full w-56 flex-col space-y-[2px] p-2"
     >
-      <Resizer sidebarRef={primarySidebarRef} isPrimarySidebar={true} />
+      <Resizer
+        sidebarRef={primarySidebarRef}
+        position="right"
+        isPrimarySidebar={true}
+      />
 
-      <Folder />
-      <File name="File 3" />
+      <div className="overflow-y-hidden">
+        <Folder />
+        <File name="File 3" />
+      </div>
     </aside>
   );
 };

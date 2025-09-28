@@ -1,26 +1,22 @@
 import { cn } from "@/lib/utils";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 
 interface ResizerProps {
   sidebarRef: React.RefObject<HTMLDivElement | null>;
   position?: "right" | "left";
   isPrimarySidebar?: boolean;
+  setWidth?: (width: number) => void;
 }
 
 const Resizer = ({
   sidebarRef,
-  position = "right",
+  position,
   isPrimarySidebar = false,
+  setWidth,
 }: ResizerProps) => {
   const isResizing = useRef<boolean>(false);
   const actionBarWidth = useRef<number>(0);
-
-  useEffect(() => {
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, []);
+  const width = useRef<number>(0);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -39,6 +35,10 @@ const Resizer = ({
 
   const handleMouseUp = () => {
     isResizing.current = false;
+
+    if (setWidth) {
+      setWidth(width.current);
+    }
 
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("mouseup", handleMouseUp);
@@ -63,15 +63,17 @@ const Resizer = ({
     if (newWidth > 1000) newWidth = 1000;
 
     sidebarRef.current.style.width = `${newWidth}px`;
+    width.current = newWidth;
   };
 
   return (
     <div
       onMouseDown={handleMouseDown}
       className={cn(
-        "bg-[#ebebeb] absolute top-0 h-full w-1 cursor-ew-resize opacity-0 hover:opacity-100",
+        //TODO: change color
+        "absolute top-0 h-full w-1 cursor-ew-resize bg-red-500 opacity-0 hover:opacity-100",
         position == "right" && "right-[-2px]",
-        position == "left" && "left-[-2px]"
+        position == "left" && "left-[-2px]",
       )}
     />
   );

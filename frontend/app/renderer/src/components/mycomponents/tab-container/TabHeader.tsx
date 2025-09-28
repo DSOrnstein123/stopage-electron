@@ -8,7 +8,8 @@ import type { MouseEvent } from "react";
 const TabHeader = ({ data, isActive }: { data: Tab; isActive: boolean }) => {
   const navigate = useNavigate();
 
-  const { setActiveTab, removeTab } = useTabStore((state) => state.actions);
+  const setActiveTab = useTabStore((state) => state.setActiveTab);
+  const removeTab = useTabStore((state) => state.removeTab);
 
   return (
     <div
@@ -21,7 +22,7 @@ const TabHeader = ({ data, isActive }: { data: Tab; isActive: boolean }) => {
         navigate(data.route);
       }}
     >
-      {data.title}
+      {data.title === "" ? "New tab" : data.title}
 
       {/* TODO: fix X position */}
       <Button

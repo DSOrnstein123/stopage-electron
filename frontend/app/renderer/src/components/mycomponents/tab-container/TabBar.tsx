@@ -10,11 +10,11 @@ const TabBar = () => {
   const tabs = useTabStore((state) => state.tabs);
   const activeTabId = useTabStore((state) => state.activeTabId);
 
-  const { addTab } = useTabStore((state) => state.actions);
+  const addTab = useTabStore((state) => state.addTab);
 
   return (
     //TODO: relearn fixed and sticky
-    <div className="sticky top-0 left-0 z-10 w-full">
+    <div className="sticky top-0 left-0 z-10 h-[81px] w-full">
       <div className="flex h-10 bg-zinc-300 pt-1">
         {tabs.map((tab) => (
           <TabHeader

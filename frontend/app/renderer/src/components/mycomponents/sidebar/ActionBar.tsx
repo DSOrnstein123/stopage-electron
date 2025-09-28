@@ -5,7 +5,7 @@ import { Calendar } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const ActionBar = () => {
-  const { addTab } = useTabStore((state) => state.actions);
+  const addTab = useTabStore((state) => state.addTab);
   const { mutateAsync: createDocument } = useDocumentsMutation();
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const ActionBar = () => {
         className="relative size-8 p-0"
         onClick={async () => {
           const data = await createDocument();
-          addTab(`/documents/${data.id}`, "New document");
+          addTab(`/documents/${data.id}`);
           navigate(`/documents/${data.id}`);
         }}
       >
@@ -63,6 +63,12 @@ const ActionBar = () => {
       <Link to="/planner">
         <Button variant="ghost" className="relative size-8">
           <Calendar />
+        </Button>
+      </Link>
+
+      <Link to="/spine">
+        <Button variant="ghost" className="relative size-8">
+          =`{">"}`
         </Button>
       </Link>
     </aside>
