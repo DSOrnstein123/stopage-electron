@@ -1,8 +1,7 @@
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { isDev } from "./utils.js";
 import { getPreloadPath } from "../preload/pathResolver.js";
-import fs from "fs";
 
 import {
   handleGetDeckById,
@@ -11,13 +10,15 @@ import {
 } from "./ipcHandlers/flashcards.js";
 import {
   handleCreateDocument,
+  handleGetDocumentsList,
   handleUpdateDocument,
 } from "./ipcHandlers/documents.js";
+import handleUploadFile from "./ipcHandlers/upload.js";
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 1300,
-    height: 750,
+    width: 2000,
+    height: 1500,
     webPreferences: {
       preload: getPreloadPath(),
       contextIsolation: true,
@@ -41,24 +42,12 @@ app.whenReady().then(() => {
   ipcMain.handle("get-decks-paginated", handleGetDecksPaginated);
   ipcMain.handle("get-deck-by-id", handleGetDeckById);
 
-  ipcMain.handle("import-image", async () => {
-    const res = await dialog.showOpenDialog({
-      title: "Choose an image",
-      properties: ["openFile"],
-      filters: [{ name: "Images", extensions: ["png", "jpg"] }],
-    });
-
-    if (res.canceled) return;
-
-    const originalPath = res.filePaths[0];
-    const storedPath = path.join(app.getPath("userData"), "images", "abc.jpg");
-
-    fs.copyFileSync(originalPath, storedPath);
-  });
+  ipcMain.handle("upload-file", handleUploadFile);
 
   //documents
   ipcMain.handle("create-document", handleCreateDocument);
   ipcMain.handle("update-document", handleUpdateDocument);
+  ipcMain.handle("get-documents-list", handleGetDocumentsList);
 
   createWindow();
 });
