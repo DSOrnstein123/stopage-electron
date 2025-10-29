@@ -81,6 +81,62 @@ func (q *Queries) GetDecksPaginated(ctx context.Context, arg GetDecksPaginatedPa
 	return items, nil
 }
 
+const getDocumentById = `-- name: GetDocumentById :one
+SELECT id, title, created_at, updated_at FROM documents WHERE id = ?
+`
+
+type GetDocumentByIdRow struct {
+	ID        string `json:"id"`
+	Title     string `json:"title"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
+func (q *Queries) GetDocumentById(ctx context.Context, id string) (GetDocumentByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getDocumentById, id)
+	var i GetDocumentByIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getDocumentsList = `-- name: GetDocumentsList :many
+SELECT id, title, created_at FROM documents
+`
+
+type GetDocumentsListRow struct {
+	ID        string `json:"id"`
+	Title     string `json:"title"`
+	CreatedAt string `json:"createdAt"`
+}
+
+func (q *Queries) GetDocumentsList(ctx context.Context) ([]GetDocumentsListRow, error) {
+	rows, err := q.db.QueryContext(ctx, getDocumentsList)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetDocumentsListRow
+	for rows.Next() {
+		var i GetDocumentsListRow
+		if err := rows.Scan(&i.ID, &i.Title, &i.CreatedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getFlashcardByID = `-- name: GetFlashcardByID :one
 SELECT id, front, back FROM flashcards WHERE id = ?
 `
@@ -158,8 +214,8 @@ INSERT INTO documents (id, title) VALUES (?, ?)
 `
 
 type InsertDocumentParams struct {
-	ID    string         `json:"id"`
-	Title sql.NullString `json:"title"`
+	ID    string `json:"id"`
+	Title string `json:"title"`
 }
 
 func (q *Queries) InsertDocument(ctx context.Context, arg InsertDocumentParams) error {
@@ -195,13 +251,11 @@ func (q *Queries) SetParentId(ctx context.Context, arg SetParentIdParams) (sql.R
 }
 
 const updateDocument = `-- name: UpdateDocument :exec
-UPDATE documents
-SET title = ?, content = ?
-WHERE id = ?
+UPDATE documents SET title = ?, content = ? WHERE id = ?
 `
 
 type UpdateDocumentParams struct {
-	Title   sql.NullString `json:"title"`
+	Title   string         `json:"title"`
 	Content sql.NullString `json:"content"`
 	ID      string         `json:"id"`
 }

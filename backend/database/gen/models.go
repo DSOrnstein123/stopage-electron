@@ -20,9 +20,11 @@ type DecksFlashcard struct {
 }
 
 type Document struct {
-	ID      string         `json:"id"`
-	Title   sql.NullString `json:"title"`
-	Content sql.NullString `json:"content"`
+	ID        string         `json:"id"`
+	Title     string         `json:"title"`
+	Content   sql.NullString `json:"content"`
+	CreatedAt string         `json:"createdAt"`
+	UpdatedAt string         `json:"updatedAt"`
 }
 
 type Flashcard struct {
