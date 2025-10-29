@@ -25,12 +25,10 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./app/renderer/src/*"
-      ]
+      "@/*": ["./app/renderer/src/*"]
     },
-    "types": ["./types"],
+    "types": ["./types"]
   },
-  "include": ["app"],
-  "exclude": ["app/main", "app/preload"],
+  "include": ["app", "types"],
+  "exclude": ["app/main", "app/preload"]
 }
