@@ -1,57 +1,78 @@
+import type { DefaultStateCreator } from "@/types/defaultStateCreator";
 import { type Tab } from "@/types/tab.types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface TabState {
+interface TabState extends TabSlice, ActiveTabSlice {}
+
+interface TabSlice {
   tabs: Tab[];
+
+  addTab: (route: string) => void;
+  removeTab: (id: string) => void;
+  updateTabTitle: (id: string, title: string) => void;
+}
+
+const createTabSlice: DefaultStateCreator<TabState, TabSlice> = (set) =>
+  ({
+    tabs: [],
+
+    addTab: (route) => {
+      const id = Date.now().toString();
+      const newTab: Tab = {
+        id: id,
+        title: "",
+        route: route,
+      };
+
+      set((state) => ({
+        tabs: [...state.tabs, newTab],
+        activeTabId: id,
+      }));
+    },
+    removeTab: (id) => {
+      set((state) => {
+        const remainingTabs = state.tabs.filter((tab) => tab.id !== id);
+
+        const newActiveTab =
+          state.activeTabId === id
+            ? remainingTabs.at(-1)?.id || null
+            : state.activeTabId;
+
+        return {
+          tabs: remainingTabs,
+          activeTabId: newActiveTab,
+        };
+      });
+    },
+    updateTabTitle: (id: string, title: string) =>
+      set((state) => ({
+        tabs: state.tabs.map((tab) =>
+          tab.id === id ? { ...tab, title: title } : tab,
+        ),
+      })),
+  }) satisfies TabSlice;
+
+interface ActiveTabSlice {
   activeTabId: string | null;
 
-  actions: TabAction;
+  setActiveTab: (id: string | null) => void;
 }
 
-interface TabAction {
-  setActiveTab: (id: string) => void;
-  addTab: (route: string, title?: string) => void;
-  removeTab: (id: string) => void;
-}
+const createActiveTabSlice: DefaultStateCreator<TabState, ActiveTabSlice> = (
+  set,
+) =>
+  ({
+    activeTabId: null,
 
-export const useTabStore = create<TabState, [["zustand/persist", TabState]]>(
+    setActiveTab: (id) => set({ activeTabId: id }),
+  }) satisfies ActiveTabSlice;
+
+export const useTabStore = create<TabState>()(
   persist(
-    (set) => ({
-      tabs: [],
-      activeTabId: null,
-
-      actions: {
-        setActiveTab: (id) => set({ activeTabId: id }),
-        addTab: (route, title = "New tab") => {
-          const id = Date.now().toString();
-          const newTab: Tab = {
-            id: id,
-            title: title,
-            route: route,
-          };
-
-          set((state) => ({
-            tabs: [...state.tabs, newTab],
-            activeTabId: id,
-          }));
-        },
-        removeTab: (id) => {
-          set((state) => {
-            const remainingTabs = state.tabs.filter((tab) => tab.id !== id);
-
-            const newActiveTab =
-              state.activeTabId === id
-                ? remainingTabs.at(-1)?.id || null
-                : state.activeTabId;
-
-            return {
-              tabs: remainingTabs,
-              activeTabId: newActiveTab,
-            };
-          });
-        },
-      },
+    (...args) => ({
+      ...createActiveTabSlice(...args),
+      ...createTabSlice(...args),
     }),
     { name: "tab-storage" },
   ),
