@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import { isDev } from "./utils.js";
+import { isDev, registerHandlers, waitForPort } from "./utils.js";
 import { getPreloadPath } from "../preload/pathResolver.js";
 
 import {
@@ -8,14 +8,10 @@ import {
   handleGetDecksPaginated,
   handleInsertDeck,
 } from "./ipcHandlers/flashcards.js";
-import {
-  handleCreateDocument,
-  handleGetDocumentsList,
-  handleUpdateDocument,
-} from "./ipcHandlers/documents.js";
 import handleUploadFile from "./ipcHandlers/upload.js";
+import { documentHandlers } from "./ipcHandlers/documents.js";
 
-const createWindow = () => {
+const createWindow = async () => {
   const mainWindow = new BrowserWindow({
     width: 2000,
     height: 1500,
@@ -24,6 +20,8 @@ const createWindow = () => {
       contextIsolation: true,
     },
   });
+
+  await waitForPort(5000);
 
   if (isDev()) {
     mainWindow.loadURL("http://localhost:5123");
@@ -44,10 +42,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle("upload-file", handleUploadFile);
 
-  //documents
-  ipcMain.handle("create-document", handleCreateDocument);
-  ipcMain.handle("update-document", handleUpdateDocument);
-  ipcMain.handle("get-documents-list", handleGetDocumentsList);
+  registerHandlers(documentHandlers);
 
   createWindow();
 });
