@@ -5,29 +5,44 @@ const EnterToBlock = Extension.create({
 
   addKeyboardShortcuts() {
     return {
+      // Enter: ({ editor }) => {
+      //   editor
+      //     .chain()
+      //     .command(({ tr, dispatch }) => {
+      //       const { selection } = tr;
+      //       const position = selection.$to.end();
+
+      //       if (dispatch) {
+      //         tr.insert(position, editor.schema.nodes.block.create());
+      //         tr.setSelection(
+      //           editor.state.selection.constructor.near(
+      //             tr.doc.resolve(position + 1),
+      //           ),
+      //         );
+      //         dispatch(tr.scrollIntoView());
+      //       }
+
+      //       return true;
+      //     })
+      //     .run();
+
+      //   return true;
+      // },
+
       Enter: ({ editor }) => {
-        editor
+        const { $from } = editor.state.selection;
+        const position = $from.after();
+
+        return editor
           .chain()
-          .command(({ tr, dispatch }) => {
-            const { selection } = tr;
-            const position = selection.$to.end();
-
-            if (dispatch) {
-              tr.insert(position, editor.schema.nodes.block.create());
-              tr.setSelection(
-                editor.state.selection.constructor.near(
-                  tr.doc.resolve(position + 1),
-                ),
-              );
-              dispatch(tr.scrollIntoView());
-            }
-
-            return true;
+          .insertContentAt(position, {
+            type: "content-block",
           })
+          .focus(position + 1)
           .run();
-
-        return true;
       },
     };
   },
 });
+
+export default EnterToBlock;

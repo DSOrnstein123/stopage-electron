@@ -1,32 +1,24 @@
 import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import SlashCommandExtension from "./extensions/slashCommands";
-import { Placeholder } from "@tiptap/extensions";
 import { useParams } from "react-router-dom";
 import debounce from "@/utils/debounce";
 import { useEffect } from "react";
+import EnterToBlock from "./extensions/block-node/enterToBlock";
+import ContentBlock from "./extensions/block-node/contentBlock";
 
 const extensions = [
-  StarterKit.configure({
-    document: false,
-  }),
+  StarterKit,
   SlashCommandExtension,
-  Placeholder.configure({
-    placeholder: () => {
-      return "";
-    },
-    showOnlyCurrent: false,
-  }),
-  // Block,
+  ContentBlock,
+  EnterToBlock,
   // KanbanNode,
 ];
 
-const content = `
-  <h1 className="mb-5"></h1>
-`;
+const content = ``;
 
 const DocumentContent = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
 
   const editor = useEditor({
     extensions,
@@ -38,30 +30,24 @@ const DocumentContent = () => {
     },
   });
 
-  const saveContent = debounce<(editor: Editor) => void>((currentEditor) => {
-    const docJSON = currentEditor.getJSON();
+  // const saveContent = debounce<(editor: Editor) => void>((currentEditor) => {
+  //   const docJSON = currentEditor.getJSON();
 
-    const titleJSON = docJSON.content.find(
-      (c) => c.type === "heading" && c.attrs?.level === 1,
-    );
-    const title = (titleJSON?.content?.[0] as any)?.text || null;
+  // }, 1000);
 
-    window.api.updateDocument(id, title, JSON.stringify(docJSON));
-  }, 1000);
+  // useEffect(() => {
+  //   if (!editor) return;
 
-  useEffect(() => {
-    if (!editor) return;
+  //   const handleUpdate = (editor: Editor) => {
+  //     saveContent(editor);
+  //   };
 
-    const handleUpdate = (editor: Editor) => {
-      saveContent(editor);
-    };
+  //   editor.on("update", ({ editor }) => handleUpdate(editor));
 
-    editor.on("update", ({ editor }) => handleUpdate(editor));
-
-    return () => {
-      editor.off("update", ({ editor }) => handleUpdate(editor));
-    };
-  }, [editor]);
+  //   return () => {
+  //     editor.off("update", ({ editor }) => handleUpdate(editor));
+  //   };
+  // }, [editor, saveContent]);
 
   return <EditorContent editor={editor} />;
 };
