@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import Resizer from "./Resizer";
-import Folder from "./items/Folder";
-import File from "./items/File";
+import List from "./List";
 
 const PrimarySidebar = () => {
   const primarySidebarRef = useRef<HTMLDivElement | null>(null);
@@ -17,10 +16,7 @@ const PrimarySidebar = () => {
         isPrimarySidebar={true}
       />
 
-      <div className="overflow-y-hidden">
-        <Folder />
-        <File name="File 3" />
-      </div>
+      <List />
     </aside>
   );
 };

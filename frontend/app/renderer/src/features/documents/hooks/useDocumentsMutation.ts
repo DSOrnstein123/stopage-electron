@@ -1,8 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useDocumentsMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: () => window.api.insertDocument(),
+    mutationFn: () => window.api.createDocument(""),
+
+    // onSuccess: (data) => {
+    //   queryClient.
+    // },
   });
 };
 

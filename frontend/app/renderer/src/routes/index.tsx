@@ -12,8 +12,9 @@ import { type BreadcrumbHandle } from "./types";
 // import Calendar from "@/features/planner/components/calendar/Calendar";
 import FlashCardsPage from "./layout/FlashCardsPage";
 import FlashCardsLayout from "@/features/flashcards/FlashCardsLayout";
-import PageWrapper from "@/components/mycomponents/custom/page/PageWrapper";
+import PageWrapper from "@/components/mycomponents/page/PageWrapper";
 import Calendar from "@/features/planner/components/calendar/Calendar";
+import SpinePlayer from "@/features/plugins/spine-player/SpinePlayer";
 // import { QueryClient } from "@tanstack/react-query";
 // import Gallery from "@/features/gallery/Gallery";
 // import SpinePlayer from "@/features/spine/SpinePlayer";
@@ -78,6 +79,10 @@ const router = createHashRouter([
             element: <PageWrapper />,
           },
         ],
+      },
+      {
+        path: "spine",
+        element: <SpinePlayer />,
       },
     ],
   },

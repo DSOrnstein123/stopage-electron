@@ -1,21 +1,37 @@
 import axios from "axios";
 import { IpcMainInvokeEvent } from "electron";
 
-const handleCreateDocument = async (
+export interface Document {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const createDocument = async (
   _: IpcMainInvokeEvent,
-  title: string | null,
-) => {
+  title: string | undefined,
+): Promise<Document[]> => {
   try {
     const res = await axios.post("http://localhost:5000/api/documents", {
       title: title,
     });
+
+    if (res.status !== 201) {
+      throw new Error(`Unexpected status: ${res.status}`);
+    }
+
     return res.data;
   } catch (e) {
-    console.log(e);
+    console.error("Failed to create document: ", e);
+    if (axios.isAxiosError(e)) {
+      throw new Error(e.response?.data?.error || "Failed to create document");
+    }
+    throw e;
   }
 };
 
-const handleUpdateDocument = async (
+const updateDocument = async (
   _: IpcMainInvokeEvent,
   id: string,
   title: string | null,
@@ -31,4 +47,17 @@ const handleUpdateDocument = async (
   }
 };
 
-export { handleCreateDocument, handleUpdateDocument };
+const getDocumentsList = async () => {
+  try {
+    const res = await axios.get("http://localhost:5000/api/documents");
+    return res.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const documentHandlers = {
+  "create-document": createDocument,
+  "update-document": updateDocument,
+  "get-documents-list": getDocumentsList,
+};

@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import File from "./File";
 
 interface File {
@@ -7,31 +5,23 @@ interface File {
   type: "folder" | "file";
 }
 
-const files: File[] = [
-  {
-    name: "File 1",
-    type: "file",
-  },
-  {
-    name: "File 2",
-    type: "file",
-  },
-  {
-    name: "Folder 1",
-    type: "folder",
-  },
-];
+export interface Document {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-const Folder = () => {
-  const [isSelected, setIsSelected] = useState<boolean>(false);
+const Folder = ({ files }: { files: Document[] }) => {
+  // const [isSelected, setIsSelected] = useState<boolean>(false);
 
-  const handleOnClick = () => {
-    setIsSelected(true);
-  };
+  // const handleOnClick = () => {
+  //   setIsSelected(true);
+  // };
 
   return (
-    <div className="flex flex-col space-y-[2px]">
-      <div
+    <>
+      {/* <div
         onClick={handleOnClick}
         className={cn(
           "rounded-md px-2 py-1 text-sm hover:bg-[#e3e3e3]/50",
@@ -39,14 +29,8 @@ const Folder = () => {
         )}
       >
         Folder
-      </div>
-
-      <div className="flex flex-col space-y-[2px]">
-        {files.map((file) => (
-          <File name={file.name} />
-        ))}
-      </div>
-    </div>
+      </div> */}
+    </>
   );
 };
 

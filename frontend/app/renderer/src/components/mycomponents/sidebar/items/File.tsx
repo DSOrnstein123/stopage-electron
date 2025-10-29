@@ -2,10 +2,10 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface FileProps {
-  name: string;
+  title: string;
 }
 
-const File = ({ name }: FileProps) => {
+const File = ({ title }: FileProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
   const handleOnClick = () => {
@@ -16,11 +16,11 @@ const File = ({ name }: FileProps) => {
     <div
       onClick={handleOnClick}
       className={cn(
-        "rounded-md px-2 py-1 text-sm hover:bg-[#e3e3e3]/50",
+        "h-7 rounded-md px-2 py-1 text-sm hover:bg-[#e3e3e3]/50",
         isSelected ? "bg-[#e3e3e3] font-medium" : "",
       )}
     >
-      <div>{name}</div>
+      <div>{title ? title : "New document"}</div>
     </div>
   );
 };
