@@ -1,8 +1,6 @@
 import type { RawPaginatedResponse } from "@/features/flashcards/schemas/deckSchema";
 import type { FlashCard } from "@/features/flashcards/types/flashcard.types";
 
-export {};
-
 declare global {
   interface Window {
     api: {
@@ -14,17 +12,15 @@ declare global {
       }) => Promise<RawPaginatedResponse[]>;
       insertDeck: (title: string, parentId: string) => Promise<unknown>;
 
-      importImage: () => void;
-
-      insertDocument: (
-        title = null,
-      ) => Promise<{ id: string; title: string | null }>;
-
-      updateDocument: (
-        id,
-        title: string | null = null,
-        content: string | null = null,
-      ) => void;
+      uploadFile: () => Promise<{
+        jsonData;
+        processedAtlasText;
+        imagePath;
+        jsonPath;
+        images;
+      }>;
     };
   }
 }
+
+export {};

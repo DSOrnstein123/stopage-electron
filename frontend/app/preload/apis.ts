@@ -1,7 +1,7 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 import { documentAPIs } from "./api/documents.js";
 
-contextBridge.exposeInMainWorld("api", {
+export const apis = {
   getDeckById: () => ipcRenderer.invoke("get-deck-by-id"),
   getDecksPaginated: (params: {
     page?: string;
@@ -13,4 +13,4 @@ contextBridge.exposeInMainWorld("api", {
   uploadFile: () => ipcRenderer.invoke("upload-file"),
 
   ...documentAPIs,
-});
+};
