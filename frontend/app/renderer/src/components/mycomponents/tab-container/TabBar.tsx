@@ -8,7 +8,6 @@ import { useTabStore } from "@/store/tabStore";
 
 const TabBar = () => {
   const tabs = useTabStore((state) => state.tabs);
-  const activeTabId = useTabStore((state) => state.activeTabId);
 
   const addTab = useTabStore((state) => state.addTab);
 
@@ -17,11 +16,7 @@ const TabBar = () => {
     <div className="sticky top-0 left-0 z-10 h-[81px] w-full">
       <div className="flex h-10 bg-zinc-300 pt-1">
         {tabs.map((tab) => (
-          <TabHeader
-            data={tab}
-            key={tab.id}
-            isActive={activeTabId === tab.id}
-          />
+          <TabHeader data={tab} key={tab.id} />
         ))}
 
         <Button variant="ghost" onClick={() => addTab("/")}>
