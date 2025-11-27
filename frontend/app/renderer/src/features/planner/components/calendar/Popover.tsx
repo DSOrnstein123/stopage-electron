@@ -28,7 +28,7 @@ const Popover = ({
 
   useEffect(() => {
     focusRef.current?.focus();
-  });
+  }, []);
 
   return (
     <div ref={ref} style={floatingStyles} {...getFloatingProps()}>

@@ -20,7 +20,7 @@ const Card = ({ title }: CardProps) => {
       onDragStart: () => setDragging(true),
       onDrop: () => setDragging(false),
     });
-  });
+  }, []);
 
   return (
     <div ref={cardRef} className={cn("bg-white", dragging && "opacity-40")}>
