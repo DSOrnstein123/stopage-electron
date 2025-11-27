@@ -5,6 +5,8 @@ import (
 	"log"
 	"main/database/gen"
 	"main/routes"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -13,7 +15,13 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite", "F:/Code/stopage-main/data/dev.db")
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	dbPath := filepath.Join(dir, "..", "data", "dev.db")
+
+	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		log.Fatal(err)
 	}
