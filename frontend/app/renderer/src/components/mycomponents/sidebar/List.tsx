@@ -29,6 +29,7 @@ const List = () => {
       >
         {virtualizerItems.map((virtualizerItem) => {
           const document = documentsList[virtualizerItem.index];
+
           return (
             <div
               key={virtualizerItem.key}
