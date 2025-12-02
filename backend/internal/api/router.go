@@ -1,13 +1,27 @@
-package routes
+package api
 
 import (
-	"main/database/gen"
-	"main/routes/api"
+	"main/internal/api/decks"
+	"main/internal/api/documents"
+	databasegen "main/internal/generated/database"
+	api "main/internal/generated/openapi"
 
 	"github.com/gin-gonic/gin"
 )
 
-func DecksRoute(router *gin.RouterGroup, queries *gen.Queries) {
+type ApiServer struct {
+	*decks.DeckHandler
+	*documents.DocumentHandler
+}
+
+func NewApiServer() *ApiServer {
+	return &ApiServer{
+		DeckHandler:     &decks.DeckHandler{},
+		DocumentHandler: &documents.DocumentHandler{},
+	}
+}
+
+func DecksRoute(router *gin.RouterGroup, queries *databasegen.Queries) {
 	deckRoute := router.Group("/decks")
 
 	deckRoute.GET("/", func(ctx *gin.Context) {
@@ -22,7 +36,7 @@ func DecksRoute(router *gin.RouterGroup, queries *gen.Queries) {
 	})
 }
 
-func DocumentsRoute(router *gin.RouterGroup, queries *gen.Queries) {
+func DocumentsRoute(router *gin.RouterGroup, queries *databasegen.Queries) {
 	documentsRoute := router.Group("/documents")
 
 	documentsRoute.GET("/", func(ctx *gin.Context) {

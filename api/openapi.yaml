@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: User API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+
+paths:
+  /api/documents:
+    $ref: "./documents/paths.yaml#/DocumentPaths"
+
+  /api/decks:
+    get:
+      summary: Get deck
+      responses:
+        "200":
+          description: Get deck
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Deck"
+            
+components:
+  schemas:
+    
+      
+
+    Deck:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        parentId:
+          type: string
+          nullable: true

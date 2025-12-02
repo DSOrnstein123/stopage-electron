@@ -10,6 +10,10 @@ import {
 } from "@tiptap/react";
 import { GripVertical } from "lucide-react";
 import { useEffect, useRef } from "react";
+import {
+  attachClosestEdge,
+  extractClosestEdge,
+} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 
 interface BlockDragData extends Record<string, unknown> {
   pos: number;
@@ -48,7 +52,17 @@ const ContentBlockView = ({
       dropTargetForElements({
         element: element,
 
-        getData: (): BlockDropData => ({ pos: getPos() || 0 }),
+        getData: ({ input, element }) => {
+          const data = { pos: getPos() || 0 };
+
+          return attachClosestEdge(data, {
+            input,
+            element,
+            allowedEdges: ["top", "bottom", "right", "left"],
+          });
+        },
+
+        onDrag: ({ self }) => console.log(extractClosestEdge(self.data)),
 
         onDrop: ({ source, self }) => {
           editor.commands.command(({ tr, dispatch }) => {
@@ -69,13 +83,18 @@ const ContentBlockView = ({
 
             return true;
           });
+
+          console.log(extractClosestEdge(self.data));
         },
       }),
     );
-  });
+  }, [editor.commands, getPos, node.nodeSize]);
 
   return (
-    <NodeViewWrapper ref={elementRef} className="relative bg-yellow-300">
+    <NodeViewWrapper
+      ref={elementRef}
+      className="relative rounded-sm bg-yellow-300 p-[3px]"
+    >
       <div ref={dragHandleRef}>
         <GripVertical className="absolute -left-6" />
       </div>

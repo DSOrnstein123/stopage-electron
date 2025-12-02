@@ -1,0 +1,16 @@
+DocumentPaths:
+  post:
+    summary: Create a new document
+    requestBody:
+      required: true
+      content:  
+        application/json:
+          schema:
+            $ref: "./components.yaml#/schemas/Document"
+    responses:
+      "201":
+        description: Document created
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/schemas/Document"

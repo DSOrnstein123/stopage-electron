@@ -9,7 +9,7 @@ sql:
       - "queries/documents/schema.sql"
     gen:
       go:
-        package: "gen"
-        out: "./gen"
+        package: "databasegen"
+        out: "../internal/generated/database"
         emit_json_tags: true
         json_tags_case_style: "camel"

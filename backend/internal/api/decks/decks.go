@@ -1,9 +1,9 @@
-package api
+package decks
 
 import (
 	"database/sql"
-	"main/database/gen"
-	"main/utils"
+	databasegen "main/internal/generated/database"
+	"main/internal/utils"
 	"math"
 	"net/http"
 	"strconv"
@@ -12,15 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DeckPaginationResult struct {
-	Decks       []gen.Deck `json:"decks"`
-	TotalCounts int64      `json:"totalCounts"`
-	TotalPages  int64      `json:"totalPages"`
-	CurrentPage int        `json:"currentPage"`
-	Limit       int        `json:"limit"`
+type DeckHandler struct {
+	DB *databasegen.Queries
 }
 
-func GetDecksPaginated(ctx *gin.Context, dc *gen.Queries) {
+type DeckPaginationResult struct {
+	Decks       []databasegen.Deck `json:"decks"`
+	TotalCounts int64              `json:"totalCounts"`
+	TotalPages  int64              `json:"totalPages"`
+	CurrentPage int                `json:"currentPage"`
+	Limit       int                `json:"limit"`
+}
+
+func GetDecksPaginated(ctx *gin.Context, dc *databasegen.Queries) {
 	query := ctx.DefaultQuery("query", "")
 	pageStr := ctx.DefaultQuery("page", "1")
 	limitStr := ctx.DefaultQuery("limit", "10")
@@ -42,7 +46,7 @@ func GetDecksPaginated(ctx *gin.Context, dc *gen.Queries) {
 
 	var wg sync.WaitGroup
 
-	var decks []gen.Deck
+	var decks []databasegen.Deck
 	var totalDecks int64
 	var decksErr, countErr error
 
@@ -51,7 +55,7 @@ func GetDecksPaginated(ctx *gin.Context, dc *gen.Queries) {
 	go func() {
 		defer wg.Done()
 
-		decks, decksErr = dc.GetDecksPaginated(ctx, gen.GetDecksPaginatedParams{
+		decks, decksErr = dc.GetDecksPaginated(ctx, databasegen.GetDecksPaginatedParams{
 			Name:   query,
 			Limit:  int64(limit),
 			Offset: int64(offset),
@@ -82,7 +86,7 @@ func GetDecksPaginated(ctx *gin.Context, dc *gen.Queries) {
 	})
 }
 
-func PostDeck(ctx *gin.Context, dc *gen.Queries) {
+func PostDeck(ctx *gin.Context, dc *databasegen.Queries) {
 	var body struct {
 		Name     string `json:"name"`
 		ParentID string `json:"parent_id"`
@@ -96,7 +100,7 @@ func PostDeck(ctx *gin.Context, dc *gen.Queries) {
 
 	id := utils.GenerateUUID()
 
-	err = dc.InsertDeck(ctx, gen.InsertDeckParams{
+	err = dc.InsertDeck(ctx, databasegen.InsertDeckParams{
 		ID:   id,
 		Name: body.Name,
 		ParentID: sql.NullString{
@@ -112,14 +116,14 @@ func PostDeck(ctx *gin.Context, dc *gen.Queries) {
 	ctx.String(http.StatusOK, "Success")
 }
 
-func GetDeck(ctx *gin.Context, dc *gen.Queries) {
+func (handler *DeckHandler) GetApiDecks(ctx *gin.Context) {
 	deckId := ctx.Param("id")
 	if deckId == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "deckId is required"})
 		return
 	}
 
-	deck, err := dc.GetDeckById(ctx, deckId)
+	deck, err := handler.DB.GetDeckById(ctx, deckId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

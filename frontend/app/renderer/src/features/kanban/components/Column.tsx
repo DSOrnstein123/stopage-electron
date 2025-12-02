@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Card from "./Card";
 
 const Column = ({
@@ -9,7 +8,7 @@ const Column = ({
     documents?: string[];
   };
 }) => {
-  useEffect(() => {});
+  // useEffect(() => {});
 
   return (
     <div className="mr-2 w-40 bg-gray-300 p-1" key={col.title}>

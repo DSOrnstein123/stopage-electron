@@ -1,0 +1,25 @@
+schemas:
+  Document:
+    type: object
+    required: [id, title, createdAt, updatedAt]
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      content:
+        type: string
+        nullable: true
+        maxLength: 255
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  CreateDocument:
+    type: object
+    properties:
+      title:
+        type: string
+        nullable: true
+        maxLength: 255

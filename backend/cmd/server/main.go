@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"log"
-	"main/database/gen"
+	"main/internal/api"
+	databasegen "main/internal/generated/database"
+	openapi "main/internal/generated/openapi"
 	"main/routes"
 	"os"
 	"path/filepath"
@@ -27,7 +29,7 @@ func main() {
 	}
 	defer db.Close()
 
-	queries := gen.New(db)
+	queries := databasegen.New(db)
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
@@ -44,6 +46,9 @@ func main() {
 		routes.DecksRoute(apiRoute, queries)
 		routes.DocumentsRoute(apiRoute, queries)
 	}
+
+	apiServer := api.NewApiServer()
+	openapi.RegisterHandlers(router, apiServer)
 
 	router.Run(":5000")
 }

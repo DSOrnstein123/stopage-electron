@@ -1,0 +1,5 @@
+package: openapi
+generate:
+  - types
+  - gin
+output: ./backend/internal/generated/openapi/types.gen.go
