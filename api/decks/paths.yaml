@@ -1,0 +1,10 @@
+DeckPaths:
+  get:
+      summary: Get deck
+      responses:
+        "200":
+          description: Get deck
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Deck"

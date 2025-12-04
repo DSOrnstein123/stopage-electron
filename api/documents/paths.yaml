@@ -6,11 +6,11 @@ DocumentPaths:
       content:  
         application/json:
           schema:
-            $ref: "./components.yaml#/schemas/Document"
+            $ref: "./components.yaml#/components/schemas/Document"
     responses:
       "201":
         description: Document created
         content:
           application/json:
             schema:
-              $ref: "./components.yaml#/schemas/Document"
+              $ref: "./components.yaml#/components/schemas/Document"

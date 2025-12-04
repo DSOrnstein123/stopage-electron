@@ -1,5 +1,6 @@
-package: openapi
+package: models
+output: ./backend/internal/generated/openapi/models/decks.gen.go
 generate:
-  - types
-  - gin
-output: ./backend/internal/generated/openapi/types.gen.go
+  models: true
+output-options:
+  skip-prune: true

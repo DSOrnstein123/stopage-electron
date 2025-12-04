@@ -1,5 +1,9 @@
 package: openapi
+output: ./backend/internal/generated/openapi/server.gen.go
 generate:
-  - types
-  - gin
-output: ./backend/internal/generated/openapi/types.gen.go
+  models: true
+  gin-server: true
+output-options:
+  skip-prune: true
+import-mapping:
+  ./components.yaml: "main/internal/generated/openapi/models"
