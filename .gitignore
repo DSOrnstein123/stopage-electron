@@ -32,3 +32,5 @@ todo.txt
 
 /data
 *.db
+
+/backend/internal/generated
