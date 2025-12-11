@@ -6,7 +6,8 @@ dbgen:
 SPECS = \
 	./api/config.yaml:./api/openapi.yaml \
 	./api/documents/config.yaml:./api/documents/components.yaml \
-	./api/decks/config.yaml:./api/decks/components.yaml
+	./api/decks/config.yaml:./api/decks/components.yaml \
+	./api/shared/error/config.yaml:./api/shared/error/components.yaml
 
 begen:
 	@for spec in $(SPECS); do \
@@ -14,3 +15,7 @@ begen:
 		FILE=$${spec##*:}; \
 		oapi-codegen --config="$$CONFIG" "$$FILE"; \
 	done
+
+redoc:
+	cd docs && go run main.go
+
