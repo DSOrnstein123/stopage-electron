@@ -2,6 +2,7 @@ components:
   schemas:
     Deck:
       type: object
+      required: [id, name]
       properties:
         id:
           type: string
@@ -10,3 +11,32 @@ components:
         parentId:
           type: string
           nullable: true
+    CreateDeckRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        parentId:
+          type: string
+    DeckPaginationResult:
+      type: object
+      properties:
+        decks:
+          type: array
+          items: 
+            $ref: "#/components/schemas/Deck"
+        totalCounts:
+          type: integer
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - decks
+        - totalCounts
+        - totalPages
+        - currentPage
+        - limit

@@ -13,3 +13,6 @@ paths:
 
   /api/decks:
     $ref: "./decks/paths.yaml#/DeckPaths"
+  /api/decks/{id}:
+    $ref: "./decks/paths.yaml#/DeckPathsParam"
+  

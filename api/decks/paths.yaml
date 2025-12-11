@@ -1,10 +1,74 @@
 DeckPaths:
   get:
-      summary: Get deck
-      responses:
-        "200":
-          description: Get deck
-          content:
-            application/json:
-              schema:
-                $ref: "./components.yaml#/components/schemas/Deck"
+    operationId: getDecks
+    summary: List decks with pagination
+    parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          required: false
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/DeckPaginationResult"
+      "400":
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: "../shared/error/components.yaml#/components/schemas/ErrorResponse"
+      # "404":
+
+      # "500":
+  post:
+    operationId: postDeck
+    summary: Create deck
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./components.yaml#/components/schemas/CreateDeckRequest"
+    responses:
+      "201":
+        description: Created
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Deck"
+
+DeckPathsParam:
+  get:
+    operationId: GetDeckById
+    summary: Get deck by id
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Deck"
