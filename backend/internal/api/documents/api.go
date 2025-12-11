@@ -30,10 +30,7 @@ func (handler *DocumentHandler) PostApiDocuments(ctx *gin.Context) {
 		return
 	}
 
-	title := ""
-	if req.Title != nil {
-		title = strings.TrimSpace(*req.Title)
-	}
+	title := strings.TrimSpace(req.Title)
 
 	id := utils.GenerateUUID()
 	doc := databasegen.InsertDocumentParams{
