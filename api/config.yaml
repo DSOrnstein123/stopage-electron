@@ -7,3 +7,4 @@ output-options:
   skip-prune: true
 import-mapping:
   ./components.yaml: "main/internal/generated/openapi/models"
+  ../shared/error/components.yaml: "main/internal/generated/openapi/models"

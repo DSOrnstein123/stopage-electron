@@ -1,0 +1,6 @@
+package: models
+output: ./backend/internal/generated/openapi/models/error.gen.go
+generate:
+  models: true
+output-options:
+  skip-prune: true
