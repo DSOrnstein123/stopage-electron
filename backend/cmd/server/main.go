@@ -5,8 +5,7 @@ import (
 	"log"
 	"main/internal/api"
 	databasegen "main/internal/generated/database"
-	openapi "main/internal/generated/openapi"
-	"main/routes"
+	"main/internal/generated/openapi"
 	"os"
 	"path/filepath"
 	"time"
@@ -21,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	dbPath := filepath.Join(dir, "..", "data", "dev.db")
+	dbPath := filepath.Join(dir, "..", "..", "..", "data", "dev.db")
 
 	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
@@ -41,13 +40,7 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	apiRoute := router.Group("/api")
-	{
-		routes.DecksRoute(apiRoute, queries)
-		routes.DocumentsRoute(apiRoute, queries)
-	}
-
-	apiServer := api.NewApiServer()
+	apiServer := api.NewApiServer(queries)
 	openapi.RegisterHandlers(router, apiServer)
 
 	router.Run(":5000")
