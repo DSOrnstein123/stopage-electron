@@ -11,15 +11,14 @@ components:
         content:
           type: string
           nullable: true
-          maxLength: 255
         createdAt:
           type: string
         updatedAt:
           type: string
-    CreateDocument:
+    PostDocumentRequestBody:
       type: object
+      required: [title]
       properties:
         title:
           type: string
-          nullable: true
           maxLength: 255

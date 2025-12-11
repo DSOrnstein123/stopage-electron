@@ -6,7 +6,7 @@ DocumentPaths:
       content:  
         application/json:
           schema:
-            $ref: "./components.yaml#/components/schemas/Document"
+            $ref: "./components.yaml#/components/schemas/PostDocumentRequestBody"
     responses:
       "201":
         description: Document created
