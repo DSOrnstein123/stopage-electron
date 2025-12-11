@@ -34,3 +34,5 @@ todo.txt
 *.db
 
 /backend/internal/generated
+
+/docs
