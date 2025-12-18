@@ -41,6 +41,21 @@ func httpStatusFromCode(code ErrorCode) int {
 	}
 }
 
+func ErrorCodeFromHTTPStatus(statusCode int) ErrorCode {
+	switch statusCode {
+	case http.StatusBadRequest:
+		return ErrCodeBadRequest
+	case http.StatusConflict:
+		return ErrCodeConflict
+	case http.StatusUnauthorized:
+		return ErrCodeUnauthorized
+	case http.StatusNotFound:
+		return ErrCodeNotFound
+	default:
+		return ErrCodeInternal
+	}
+}
+
 func ResponseError(ctx *gin.Context, err error) {
 	fmt.Printf("System Log: %+v\n", err)
 
