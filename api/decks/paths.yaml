@@ -30,14 +30,9 @@ DeckPaths:
             schema:
               $ref: "./components.yaml#/components/schemas/DeckPaginationResult"
       "400":
-        description: Bad request
-        content:
-          application/json:
-            schema:
-              $ref: "../shared/error/components.yaml#/components/schemas/ErrorResponse"
-      # "404":
-
-      # "500":
+        $ref: "../shared/error/components.yaml#/components/responses/BadRequestError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"
   post:
     operationId: postDeck
     summary: Create deck
@@ -54,6 +49,10 @@ DeckPaths:
           application/json:
             schema:
               $ref: "./components.yaml#/components/schemas/Deck"
+      "400":
+        $ref: "../shared/error/components.yaml#/components/responses/BadRequestError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"
 
 DeckPathsParam:
   get:
@@ -64,6 +63,7 @@ DeckPathsParam:
         name: id
         schema:
           type: string
+          format: uuid
         required: true
     responses:
       "200":
@@ -72,3 +72,23 @@ DeckPathsParam:
           application/json:
             schema:
               $ref: "./components.yaml#/components/schemas/Deck"
+      "404":
+        $ref: "../shared/error/components.yaml#/components/responses/NotFoundError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"
+  delete:
+    operationId: DeleteDeck
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+    responses:
+      "204":
+        description: "No content"
+      "404":
+        $ref: "../shared/error/components.yaml#/components/responses/NotFoundError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"

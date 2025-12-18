@@ -2,11 +2,28 @@ components:
   schemas:
     ErrorResponse:
       type: object
-      required: [code, message, status]
+      required: [code, message]
       properties:
         code:
           type: string
         message:
           type: string
-        status:
-          type: integer
+  responses:
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
