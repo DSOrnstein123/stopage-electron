@@ -6,8 +6,6 @@ import (
 	"main/internal/api"
 	databasegen "main/internal/generated/database"
 	"main/internal/generated/openapi"
-	"main/internal/generated/openapi/models"
-	"main/internal/utils"
 	"os"
 	"path/filepath"
 	"time"
@@ -44,12 +42,7 @@ func main() {
 
 	apiServer := api.NewApiServer(queries)
 	openapi.RegisterHandlersWithOptions(router, apiServer, openapi.GinServerOptions{
-		ErrorHandler: func(c *gin.Context, err error, statusCode int) {
-			c.JSON(statusCode, models.ErrorResponse{
-				Code:    string(utils.ErrCodeBadRequest),
-				Message: err.Error(),
-			})
-		},
+		ErrorHandler: api.ErrorHandler,
 	})
 
 	router.Run(":5000")
