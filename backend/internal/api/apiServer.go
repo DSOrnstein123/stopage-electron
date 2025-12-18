@@ -14,7 +14,7 @@ type ApiServer struct {
 
 func NewApiServer(DB *databasegen.Queries) *ApiServer {
 	return &ApiServer{
-		Decks:     &decks.DeckHandler{DB: DB, Service: *decks.NewDeckService(decks.NewDeckRepository(DB))},
+		Decks:     &decks.DeckHandler{Service: *decks.NewDeckService(decks.NewDeckRepository(DB))},
 		Documents: &documents.DocumentHandler{DB: DB},
 	}
 }

@@ -1,7 +1,6 @@
 package decks
 
 import (
-	databasegen "main/internal/generated/database"
 	"main/internal/generated/openapi"
 	"main/internal/generated/openapi/models"
 	"main/internal/utils"
@@ -12,7 +11,6 @@ import (
 )
 
 type DeckHandler struct {
-	DB      *databasegen.Queries
 	Service DeckService
 }
 
@@ -88,11 +86,7 @@ func (handler *DeckHandler) PostDeck(ctx *gin.Context) {
 		return
 	}
 
-	apiDeck := models.Deck{
-		Id:       created.Id,
-		Name:     created.Name,
-		ParentId: created.ParentId,
-	}
+	apiDeck := DeckDomainToApi(created)
 
 	ctx.JSON(201, apiDeck)
 }
