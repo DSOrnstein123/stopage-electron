@@ -1,0 +1,25 @@
+components:
+  schemas:
+    Document:
+      type: object
+      required: [id, title, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    PostDocumentRequestBody:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          maxLength: 255

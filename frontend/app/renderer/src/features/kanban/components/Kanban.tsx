@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Column from "./Column";
 
 const cols = [
@@ -15,7 +14,7 @@ const cols = [
 ];
 
 const Kanban = () => {
-  useEffect(() => {});
+  // useEffect(() => {});
 
   return (
     // replace by view wrapper later

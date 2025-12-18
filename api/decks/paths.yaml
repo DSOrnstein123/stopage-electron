@@ -1,0 +1,94 @@
+DeckPaths:
+  get:
+    operationId: getDecks
+    summary: List decks with pagination
+    parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          required: false
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/DeckPaginationResult"
+      "400":
+        $ref: "../shared/error/components.yaml#/components/responses/BadRequestError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"
+  post:
+    operationId: postDeck
+    summary: Create deck
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "./components.yaml#/components/schemas/CreateDeckRequest"
+    responses:
+      "201":
+        description: Created
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Deck"
+      "400":
+        $ref: "../shared/error/components.yaml#/components/responses/BadRequestError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"
+
+DeckPathsParam:
+  get:
+    operationId: GetDeckById
+    summary: Get deck by id
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Deck"
+      "404":
+        $ref: "../shared/error/components.yaml#/components/responses/NotFoundError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"
+  delete:
+    operationId: DeleteDeck
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+    responses:
+      "204":
+        description: "No content"
+      "404":
+        $ref: "../shared/error/components.yaml#/components/responses/NotFoundError"
+      "500":
+        $ref: "../shared/error/components.yaml#/components/responses/InternalServerError"

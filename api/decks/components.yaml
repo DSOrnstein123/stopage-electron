@@ -1,0 +1,50 @@
+components:
+  schemas:
+    Deck:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+          nullable: true
+    CreateDeckRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+          nullable: true
+    DeckPaginationResult:
+      type: object
+      properties:
+        decks:
+          type: array
+          items: 
+            $ref: "#/components/schemas/Deck"
+        totalCounts:
+          type: integer
+        totalPages:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        search:
+          type: string
+      required:
+        - decks
+        - totalCounts
+        - totalPages
+        - currentPage
+        - limit
+        - search
+        - page

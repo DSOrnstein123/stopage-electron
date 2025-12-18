@@ -29,3 +29,10 @@ public
 
 spine.txt
 todo.txt
+
+/data
+*.db
+
+/backend/internal/generated
+
+/docs

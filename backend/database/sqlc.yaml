@@ -9,7 +9,14 @@ sql:
       - "queries/documents/schema.sql"
     gen:
       go:
-        package: "gen"
-        out: "./gen"
+        package: "databasegen"
+        out: "../internal/generated/database"
+        overrides:
+          - column: "decks.id"
+            go_type: "github.com/google/uuid.UUID"
+          - column: "decks.parent_id"
+            go_type: "github.com/google/uuid.NullUUID"
+          - column: "documents.id"
+            go_type: "github.com/google/uuid.UUID"
         emit_json_tags: true
         json_tags_case_style: "camel"

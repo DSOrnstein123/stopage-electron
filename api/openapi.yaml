@@ -1,0 +1,18 @@
+openapi: 3.0.0
+info:
+  title: User API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+
+paths:
+  /api/documents:
+    $ref: "./documents/paths.yaml#/DocumentPaths"
+
+  /api/decks:
+    $ref: "./decks/paths.yaml#/DeckPaths"
+  /api/decks/{id}:
+    $ref: "./decks/paths.yaml#/DeckPathsParam"
+  

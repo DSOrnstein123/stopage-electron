@@ -15,6 +15,7 @@ const ActionBar = () => {
         variant="ghost"
         className="relative size-8 p-0"
         onClick={async () => {
+          console.log(window.api);
           const data = await createDocument();
           addTab(`/documents/${data.id}`);
           navigate(`/documents/${data.id}`);
@@ -71,6 +72,15 @@ const ActionBar = () => {
           =`{">"}`
         </Button>
       </Link>
+
+      <button
+        className="rounded-md border-1"
+        onClick={() => {
+          navigate("/pdf-reader");
+        }}
+      >
+        pdf
+      </button>
     </aside>
   );
 };

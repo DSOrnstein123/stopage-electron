@@ -8,6 +8,13 @@ CREATE TABLE IF NOT EXISTS flashcards (
     id TEXT PRIMARY KEY,
     front TEXT NOT NULL,
     back TEXT NOT NULL
+
+    repetition INTERGER NOT NULL DEFAULT 0
+    interval INTERGER NOT NULL DEFAULT 0
+    ease_factor REAL NOT NULL DEFAULT 2.5
+
+    created_at TEXT NOT NULL DEFAULT(datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT(datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS decks_flashcards (

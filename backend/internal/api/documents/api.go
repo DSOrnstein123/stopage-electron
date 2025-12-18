@@ -1,23 +1,27 @@
-package api
+package documents
 
 import (
 	"database/sql"
 	"log"
-	"main/database/gen"
-	"main/utils"
+	databasegen "main/internal/generated/database"
+	api "main/internal/generated/openapi"
+	"main/internal/utils"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
+type DocumentHandler struct {
+	DB *databasegen.Queries
+}
+
 type CreateDocumentRequest struct {
 	Title *string `json:"title" binding:"omitempty,max=255"`
 }
 
-func PostDocument(ctx *gin.Context, queries *gen.Queries) {
-	var req CreateDocumentRequest
-
+func (handler *DocumentHandler) PostApiDocuments(ctx *gin.Context) {
+	var req api.PostApiDocumentsJSONRequestBody
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -26,18 +30,15 @@ func PostDocument(ctx *gin.Context, queries *gen.Queries) {
 		return
 	}
 
-	title := ""
-	if req.Title != nil {
-		title = strings.TrimSpace(*req.Title)
-	}
+	title := strings.TrimSpace(req.Title)
 
 	id := utils.GenerateUUID()
-	doc := gen.InsertDocumentParams{
+	doc := databasegen.InsertDocumentParams{
 		ID:    id,
 		Title: title,
 	}
 
-	err = queries.InsertDocument(ctx, doc)
+	err = handler.DB.InsertDocument(ctx, doc)
 	if err != nil {
 		log.Printf("Failed to insert document: %v", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -46,7 +47,7 @@ func PostDocument(ctx *gin.Context, queries *gen.Queries) {
 		return
 	}
 
-	resp, err := queries.GetDocumentById(ctx, id)
+	resp, err := handler.DB.GetDocumentById(ctx, id)
 	if err != nil {
 		log.Printf("Failed to fetch created document: %v", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -58,8 +59,9 @@ func PostDocument(ctx *gin.Context, queries *gen.Queries) {
 	ctx.JSON(http.StatusCreated, resp)
 }
 
-func UpdateDocument(ctx *gin.Context, queries *gen.Queries) {
-	id := ctx.Param("id")
+func UpdateDocument(ctx *gin.Context, queries *databasegen.Queries) {
+	// id := ctx.Param("id")
+	id := utils.GenerateUUID()
 
 	var body struct {
 		Title   *string `json:"title"`
@@ -72,7 +74,7 @@ func UpdateDocument(ctx *gin.Context, queries *gen.Queries) {
 		return
 	}
 
-	document := gen.UpdateDocumentParams{
+	document := databasegen.UpdateDocumentParams{
 		ID: id,
 	}
 
@@ -97,7 +99,7 @@ func UpdateDocument(ctx *gin.Context, queries *gen.Queries) {
 	ctx.JSON(http.StatusOK, "Success")
 }
 
-func GetDocumentsList(ctx *gin.Context, queries *gen.Queries) {
+func GetDocumentsList(ctx *gin.Context, queries *databasegen.Queries) {
 	documentsList, err := queries.GetDocumentsList(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})

@@ -1,0 +1,11 @@
+package: openapi
+output: ./backend/internal/generated/openapi/server.gen.go
+generate:
+  models: true
+  gin-server: true
+output-options:
+  skip-prune: true
+import-mapping:
+  ./components.yaml: "main/internal/generated/openapi/models"
+  ../shared/error/components.yaml: "main/internal/generated/openapi/models"
+  

@@ -1,11 +1,12 @@
-import { Editor, EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import SlashCommandExtension from "./extensions/slashCommands";
+import EnterToBlock from "./extensions/block-node/enterToBlock";
+import ContentBlock from "./extensions/block-node/contentBlock";
+import { CustomBubbleMenu as BubbleMenu } from "./CustomBubbleMenu";
 import { useParams } from "react-router-dom";
 import debounce from "@/utils/debounce";
 import { useEffect } from "react";
-import EnterToBlock from "./extensions/block-node/enterToBlock";
-import ContentBlock from "./extensions/block-node/contentBlock";
 
 const extensions = [
   StarterKit,
@@ -25,7 +26,7 @@ const DocumentContent = () => {
     content,
     editorProps: {
       attributes: {
-        class: "focus:outline-none",
+        class: "flex h-full flex-col gap-y-2 focus:outline-none",
       },
     },
   });
@@ -49,7 +50,12 @@ const DocumentContent = () => {
   //   };
   // }, [editor, saveContent]);
 
-  return <EditorContent editor={editor} />;
+  return (
+    <>
+      <BubbleMenu editor={editor} />
+      <EditorContent editor={editor} />
+    </>
+  );
 };
 
 export default DocumentContent;
