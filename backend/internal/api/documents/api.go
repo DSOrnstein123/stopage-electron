@@ -60,7 +60,8 @@ func (handler *DocumentHandler) PostApiDocuments(ctx *gin.Context) {
 }
 
 func UpdateDocument(ctx *gin.Context, queries *databasegen.Queries) {
-	id := ctx.Param("id")
+	// id := ctx.Param("id")
+	id := utils.GenerateUUID()
 
 	var body struct {
 		Title   *string `json:"title"`
