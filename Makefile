@@ -19,3 +19,8 @@ begen:
 redoc:
 	cd docs && go run main.go
 
+server:
+	cd backend/cmd/server && go run .
+
+sql:
+	cd backend/database && sqlc generate
