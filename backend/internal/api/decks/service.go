@@ -95,6 +95,10 @@ func (service *DeckService) GetPaginated(ctx context.Context, params *DeckPagina
 }
 
 func (service *DeckService) Create(ctx context.Context, body *DeckReqBody) (*Deck, error) {
+	if body.Name == "" {
+		return nil, utils.WrapError(utils.ErrCodeBadRequest, "Deck name cannot be empty", nil)
+	}
+
 	id := utils.GenerateUUID()
 
 	var parentId uuid.NullUUID
