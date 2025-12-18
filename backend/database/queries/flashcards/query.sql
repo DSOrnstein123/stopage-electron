@@ -19,6 +19,9 @@ SELECT * FROM decks WHERE id = ?;
 -- name: DeleteFlashcard :exec
 DELETE FROM flashcards WHERE id = ?;
 
+-- name: DeleteDeck :exec
+DELETE FROM decks WHERE id = ?;
+
 -- name: GetFlashcardsInDeck :many
 SELECT f.*
 FROM
@@ -38,5 +41,10 @@ LIMIT ?
 OFFSET
     ?;
 
--- name: InsertDeck :exec
-INSERT INTO decks (id, name, parent_id) VALUES (?, ?, ?);
+-- name: InsertDeck :one
+INSERT INTO
+    decks (id, name, parent_id)
+VALUES (?, ?, ?) RETURNING id,
+    name,
+    parent_id;
+;

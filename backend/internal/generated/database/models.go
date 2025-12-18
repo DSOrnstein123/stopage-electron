@@ -6,12 +6,14 @@ package databasegen
 
 import (
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 type Deck struct {
-	ID       string         `json:"id"`
-	Name     string         `json:"name"`
-	ParentID sql.NullString `json:"parentId"`
+	ID       uuid.UUID     `json:"id"`
+	Name     string        `json:"name"`
+	ParentID uuid.NullUUID `json:"parentId"`
 }
 
 type DecksFlashcard struct {
@@ -20,7 +22,7 @@ type DecksFlashcard struct {
 }
 
 type Document struct {
-	ID        string         `json:"id"`
+	ID        uuid.UUID      `json:"id"`
 	Title     string         `json:"title"`
 	Content   sql.NullString `json:"content"`
 	CreatedAt string         `json:"createdAt"`
