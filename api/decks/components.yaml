@@ -6,10 +6,12 @@ components:
       properties:
         id:
           type: string
+          format: uuid
         name:
           type: string
         parentId:
           type: string
+          format: uuid
           nullable: true
     CreateDeckRequest:
       type: object
@@ -19,6 +21,8 @@ components:
           type: string
         parentId:
           type: string
+          format: uuid
+          nullable: true
     DeckPaginationResult:
       type: object
       properties:
@@ -30,13 +34,17 @@ components:
           type: integer
         totalPages:
           type: integer
-        currentPage:
+        page:
           type: integer
         limit:
           type: integer
+        search:
+          type: string
       required:
         - decks
         - totalCounts
         - totalPages
         - currentPage
         - limit
+        - search
+        - page
