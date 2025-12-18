@@ -1,17 +1,14 @@
 package decks
 
 import (
-	"database/sql"
 	databasegen "main/internal/generated/database"
 	"main/internal/generated/openapi"
 	"main/internal/generated/openapi/models"
 	"main/internal/utils"
-	"main/internal/utils/mapping"
-	"math"
 	"net/http"
-	"sync"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type DeckHandler struct {
@@ -20,135 +17,92 @@ type DeckHandler struct {
 }
 
 func (handler *DeckHandler) GetDecks(ctx *gin.Context, params openapi.GetDecksParams) {
-	query := "%"
-	if params.Search != nil && *params.Search != "" {
-		query = "%" + *params.Search + "%"
+	search := ""
+	if params.Search != nil {
+		search = *params.Search
 	}
 
-	page := 1
-	if params.Page != nil && *params.Page > 0 {
-		page = *params.Page
+	var page int64 = 0
+	if params.Page != nil {
+		page = int64(*params.Page)
 	}
 
-	limit := 10
-	if params.Limit != nil && *params.Limit > 0 {
-		limit = *params.Limit
+	var limit int64 = 0
+	if params.Limit != nil {
+		limit = int64(*params.Limit)
 	}
 
-	offset := (page - 1) * limit
+	domainParams := &DeckPaginatedParams{
+		Search: search,
+		Page:   page,
+		Limit:  limit,
+	}
 
-	var wg sync.WaitGroup
-
-	var (
-		apiDecks    []models.Deck
-		totalCounts int
-		decksErr    error
-		countErr    error
-	)
-
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-
-		decks, err := handler.DB.GetDecksPaginated(ctx, databasegen.GetDecksPaginatedParams{
-			Name:   query,
-			Limit:  int64(limit),
-			Offset: int64(offset),
-		})
-		if err != nil {
-			decksErr = err
-			return
-		}
-
-		apiDecks = mapping.MapDecksFromDb(decks)
-	}()
-
-	go func() {
-		defer wg.Done()
-
-		totalDecks, err := handler.DB.CountDecksBySearch(ctx, query)
-		if err != nil {
-			countErr = err
-			return
-		}
-
-		totalCounts = int(totalDecks)
-	}()
-
-	wg.Wait()
-
-	if err := utils.FirstNonNill(decksErr, countErr); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	domainRes, err := handler.Service.GetPaginated(ctx.Request.Context(), domainParams)
+	if err != nil {
+		utils.ResponseError(ctx, err)
 		return
 	}
 
-	totalPages := int(math.Ceil(float64(totalCounts) / float64(limit)))
+	apiDecks := DecksDomainToApi(domainRes.Decks)
 
 	ctx.JSON(http.StatusOK, &models.DeckPaginationResult{
 		Decks:       apiDecks,
-		TotalCounts: totalCounts,
-		TotalPages:  totalPages,
-		CurrentPage: page,
-		Limit:       limit,
+		Search:      domainRes.Search,
+		Page:        int(domainRes.Page),
+		Limit:       int(domainRes.Limit),
+		TotalCounts: int(domainRes.TotalCounts),
+		TotalPages:  int(domainRes.TotalPages),
 	})
+}
+
+func (handler *DeckHandler) GetDeck(ctx *gin.Context, id uuid.UUID) {
+	reqCtx := ctx.Request.Context()
+	deck, err := handler.Service.GetById(reqCtx, id)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	apiDeck := DeckDomainToApi(deck)
+
+	ctx.JSON(http.StatusOK, apiDeck)
 }
 
 func (handler *DeckHandler) PostDeck(ctx *gin.Context) {
-	var err error
-
-	var body models.CreateDeckRequest
-	err = ctx.BindJSON(&body)
+	body := models.CreateDeckRequest{}
+	err := ctx.BindJSON(&body)
 	if err != nil {
-		ctx.JSON(400, gin.H{"error": "Invalid JSON"})
+		utils.ResponseInvalidRequest(ctx, err)
 		return
 	}
 
-	id := utils.GenerateUUID()
-
-	var parentId sql.NullString
-	if body.ParentId != nil {
-		parentId = sql.NullString{
-			String: *body.ParentId,
-			Valid:  true,
-		}
-	}
-
-	err = handler.DB.InsertDeck(ctx, databasegen.InsertDeckParams{
-		ID:       id,
-		Name:     body.Name,
-		ParentID: parentId,
-	})
-	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(201, models.Deck{
-		Id:       id,
+	deck := &DeckReqBody{
 		Name:     body.Name,
 		ParentId: body.ParentId,
-	})
-}
-
-func MapDeckFromDomain(deck *Deck) models.Deck {
-	res := models.Deck{
-		Id:       deck.Id,
-		Name:     deck.Name,
-		ParentId: deck.ParentId,
 	}
 
-	return res
-}
-
-func (handler *DeckHandler) GetDeckById(ctx *gin.Context, id string) {
-	deck, err := handler.Service.GetDeckById(ctx, id)
+	created, err := handler.Service.Create(ctx.Request.Context(), deck)
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		utils.ResponseError(ctx, err)
 		return
 	}
 
-	apiDeck := MapDeckFromDomain(deck)
+	apiDeck := models.Deck{
+		Id:       created.Id,
+		Name:     created.Name,
+		ParentId: created.ParentId,
+	}
 
-	ctx.JSON(http.StatusOK, apiDeck)
+	ctx.JSON(201, apiDeck)
+}
+
+func (handler *DeckHandler) DeleteDeck(ctx *gin.Context, id uuid.UUID) {
+	err := handler.Service.Delete(ctx.Request.Context(), id)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
 }
